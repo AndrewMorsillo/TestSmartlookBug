@@ -28,11 +28,10 @@ import {
 
 declare const global: { HermesInternal: null | {} };
 
-if(!__DEV__){
     var Smartlook = require('smartlook-react-native-wrapper');
-    Smartlook.setupAndStartRecording("MY_KEY_HERE");
+    Smartlook.setupAndStartRecording("MY_KEY");
+    Smartlook.setUserIdentifier("testbuguserid")
 
-}
 
 
 export function useDelayUnmount(isMounted: boolean, delayTime: number) {
@@ -89,7 +88,7 @@ function useFlyFadeInOut(shown: boolean, speed: number = 200, animationId?: stri
 function Dialog({text, shown, onRequestClose}: { text: string, shown: boolean, onRequestClose: () => void }) {
     const [render, opacity, scale] = useFlyFadeInOut(shown)
 
-    if(!render){
+    if (!render) {
         return null
     }
 
@@ -135,17 +134,32 @@ const App = () => {
     return (
         <>
             <StatusBar barStyle="dark-content"/>
-            <SafeAreaView style={{position: "absolute", zIndex: 0, width: "100%", height: "100%",display: "flex", flexDirection: "column", alignContent: "center", justifyContent: "center"}}>
+            <SafeAreaView style={{
+                position: "absolute",
+                zIndex: 0,
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignContent: "center",
+                justifyContent: "center"
+            }}>
 
-                <Dialog text={"Dialog one"} shown={showDialog1} onRequestClose={() => setShowDialog1(false)} />
-                <Dialog text={"Dialog two"} shown={showDialog2} onRequestClose={() => setShowDialog2(false)} />
+                <Dialog text={"Dialog one"} shown={showDialog1} onRequestClose={() => setShowDialog1(false)}/>
+                <Dialog text={"Dialog two"} shown={showDialog2} onRequestClose={() => setShowDialog2(false)}/>
 
                 <View style={{padding: 40, zIndex: 0}}>
-                    <Button title={"Show dialog 1"} onPress={() => setShowDialog1(true)} />
+                    <Button title={"Show dialog 1"} onPress={() => {
+                        setShowDialog1(true)
+                        Smartlook.trackCustomEvent("showed_dialog_1", {"foo": "bar"})
+                    }}/>
                 </View>
 
                 <View style={{padding: 40, zIndex: 0,}}>
-                    <Button title={"Show dialog 2"} onPress={() => setShowDialog2(true)} />
+                    <Button title={"Show dialog 2"} onPress={() => {
+                        setShowDialog2(true)
+                        Smartlook.trackCustomEvent("showed_dialog_2", {"foo": "bar"})
+                    }}/>
                 </View>
 
 
